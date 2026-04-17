@@ -6,7 +6,7 @@ Three seeded demo users can create, edit, import, and share rich-text documents.
 
 ## Live demo
 
-URL is listed in `SUBMISSION.md` once deployed. Demo credentials below work on the live site too.
+URL is listed in `SUBMISSION.md` once deployed. Demo credentials below work on the live site too. Just In case here's the video url: https://www.loom.com/share/d49a701662b94370baf8b627e52d1be2
 
 ## Demo credentials
 
