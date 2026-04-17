@@ -1,6 +1,4 @@
-Walkthrough video URL:
-
-_To be filled in after the video is recorded and uploaded (YouTube / Loom unlisted link)._
+Walkthrough video URL: https://www.loom.com/share/d49a701662b94370baf8b627e52d1be2
 
 The video covers:
   1. Sign-in with seeded credentials (Alex)
