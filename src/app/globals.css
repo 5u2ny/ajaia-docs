@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+/* ProseMirror/TipTap editor styling — keep it spacious and reviewer-friendly. */
+.tiptap {
+  outline: none;
+  min-height: 60vh;
+}
+
+.tiptap > * + * {
+  margin-top: 0.75em;
+}
+
+.tiptap p {
+  line-height: 1.7;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #94a3b8;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: 1.4em;
+}
+
+.tiptap h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1.2em;
+}
+
+.tiptap h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 1em;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.5rem;
+}
+
+.tiptap ul {
+  list-style: disc;
+}
+
+.tiptap ol {
+  list-style: decimal;
+}
+
+.tiptap li > p {
+  margin: 0.25em 0;
+}
+
+.tiptap blockquote {
+  border-left: 3px solid #cbd5e1;
+  padding-left: 1rem;
+  color: #475569;
+  font-style: italic;
+}
+
+.tiptap code {
+  background: #f1f5f9;
+  padding: 0.1em 0.35em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.tiptap pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+}
+
+.tiptap pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.tiptap u {
+  text-decoration: underline;
+}
+
+.tiptap a,
+.tiptap a.tiptap-link {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.tiptap a:hover {
+  color: #1d4ed8;
+}
+
+.tiptap mark {
+  background-color: #fef3c7;
+  color: inherit;
+  padding: 0 0.1em;
+  border-radius: 2px;
+}
+
+.tiptap hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 1.25em 0;
+}
+
+/* ---------- Focus mode ---------- */
+/* Body toggles `.focus-mode` via DocumentEditor. We fade chrome away and
+   let the writer see only their words, iA-Writer style. */
+body.focus-mode .app-chrome {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+body.focus-mode .outline-sidebar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+body.focus-mode .toolbar-sticky {
+  opacity: 0.25;
+  transition: opacity 200ms ease;
+}
+body.focus-mode .toolbar-sticky:hover,
+body.focus-mode .toolbar-sticky:focus-within {
+  opacity: 1;
+}
+body.focus-mode .tiptap {
+  font-size: 1.0625rem;
+}
+
+/* ---------- Outline jump flash ---------- */
+/* Briefly highlights a heading after the user clicks it in the outline,
+   so they see where they landed. */
+.outline-jump-flash {
+  animation: outline-flash 1s ease-out;
+}
+@keyframes outline-flash {
+  0% {
+    background-color: rgba(250, 204, 21, 0.35);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* ---------- Sticky menu bar (sits below TopBar) ---------- */
+.menubar-sticky {
+  position: sticky;
+  top: 3.5rem;
+  z-index: 9;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+body.focus-mode .menubar-sticky {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+/* ---------- Sticky editor toolbar (sits below the menu bar) ---------- */
+.toolbar-sticky {
+  position: sticky;
+  top: 5.625rem; /* 3.5rem TopBar + ~2.125rem MenuBar */
+  z-index: 8;
+  background: rgba(248, 250, 252, 0.95);
+  backdrop-filter: saturate(180%) blur(6px);
+  padding: 0.25rem 0;
+}

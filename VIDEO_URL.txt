@@ -1,0 +1,14 @@
+Walkthrough video URL:
+
+_To be filled in after the video is recorded and uploaded (YouTube / Loom unlisted link)._
+
+The video covers:
+  1. Sign-in with seeded credentials (Alex)
+  2. Dashboard: owned + shared sections, ownership badges
+  3. Create a new document; rename; apply rich-text formatting
+  4. Refresh → content persists
+  5. Import a .md file → shows up as editable document
+  6. Share the doc with Maya; switch to Maya; open shared doc
+  7. Direct-URL access denial for Jordan (non-owner, non-collaborator)
+  8. Architecture & tradeoff discussion
+  9. How AI sped up / was overridden (see AI_WORKFLOW.md)

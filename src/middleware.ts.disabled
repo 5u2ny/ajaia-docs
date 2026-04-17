@@ -1,0 +1,39 @@
+/**
+ * Middleware runs at the edge before any page/route. We use it to redirect
+ * unauthenticated users to /login before they hit a protected page.
+ *
+ * API routes do their own session check (cleaner error responses) — the
+ * matcher below excludes them to avoid a double-check.
+ */
+import { NextRequest, NextResponse } from "next/server";
+import { verifySession } from "@/lib/auth";
+
+const PUBLIC_PATHS = ["/login"];
+
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // Public paths are always allowed.
+  if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    return NextResponse.next();
+  }
+
+  const token = req.cookies.get("ajaia_session")?.value;
+  const session = token ? await verifySession(token) : null;
+
+  if (!session) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
+}
+
+// Match everything EXCEPT: api, static assets, auth-free marketing paths.
+export const config = {
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt).*)",
+  ],
+};

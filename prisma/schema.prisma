@@ -1,0 +1,73 @@
+// Ajaia Document Editor — database schema
+//
+// Why these three tables?
+//   User             — identity and ownership
+//   Document         — the document itself (TipTap JSON + preview snippet)
+//   DocumentShare    — explicit share records (user X can access doc Y)
+//
+// Why SQLite in dev and Postgres in prod?
+//   SQLite has zero setup — `prisma db push` creates a single dev.db file.
+//   Postgres is what we deploy against (Neon). Same Prisma schema, just the
+//   provider changes via DATABASE_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // We run Postgres in every environment (Neon in prod, a local Postgres or
+  // a Neon dev branch in dev). Prisma abstracts dialect differences so the
+  // models below stay provider-agnostic.
+  //
+  // DATABASE_URL should be Neon's pooled connection string in production
+  // (serverless functions open many short-lived connections). Migrations
+  // that need DDL can be run locally against the same URL for this assignment;
+  // if you want a stricter split, add `directUrl = env("DIRECT_URL")` and
+  // set DIRECT_URL to Neon's direct connection string.
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String           @id @default(cuid())
+  name         String
+  email        String           @unique
+  passwordHash String
+  createdAt    DateTime         @default(now())
+
+  ownedDocuments  Document[]        @relation("DocumentOwner")
+  sharedWith      DocumentShare[]   @relation("SharedWithUser")
+}
+
+model Document {
+  id               String           @id @default(cuid())
+  title            String           @default("Untitled document")
+  // TipTap stores a JSON tree. SQLite has no JSON type, so we store it as a
+  // TEXT column and parse on read.
+  contentJson      String           @default("{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\"}]}")
+  // Plain-text snippet used for dashboard previews. Updated on every save.
+  plainTextPreview String           @default("")
+  ownerId          String
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  owner            User             @relation("DocumentOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  shares           DocumentShare[]
+}
+
+model DocumentShare {
+  id          String   @id @default(cuid())
+  documentId  String
+  userId      String
+  // Only one permission level for this scope (EDIT). Structured as an enum-ish
+  // string so we can add VIEW later without a migration for existing rows.
+  permission  String   @default("EDIT")
+  createdAt   DateTime @default(now())
+
+  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user        User     @relation("SharedWithUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  // A user can be on a document's share list exactly once.
+  @@unique([documentId, userId])
+  @@index([userId])
+}
